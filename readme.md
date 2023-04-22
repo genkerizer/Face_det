@@ -1,4 +1,4 @@
-# Face Recognition
+# Face Detection
 
 
 ## Các nội dung chính
