@@ -1,0 +1,79 @@
+Global:
+  epoch: 100
+  use_pretrain: True
+  pretrain_path: 
+  batch_size: 1
+  resume_epoch: 0
+  checkpoints: checkpoints/20230226
+
+
+Architecture:
+
+  Backbone:
+    name: mobinet_v1
+    in_channel: 32
+    return_layers: {'stage1': 1, 'stage2': 2, 'stage3': 3}
+  Neck:
+    name: FPN
+  Head:
+    name: HeadRetina
+    out_channel: 64
+
+
+Inference:
+  load_to_cpu: True
+  pretrained_path: checkpoints/iter_8000.pth
+  cpu: True
+  resize: 1.0
+  confidence_threshold: 0.02
+  top_k: 100
+  variance: [0.1, 0.2]
+  save_image: True
+  keep_top_k: 100
+  nms_threshold: 0.4
+  vis_thres: 0.6
+  save_dir: outputs/images
+
+
+ConvertOnnx:
+  convert: False
+  img_size: 640
+  save_onnx: inference/models/20230226
+
+
+
+SaveWeight:
+  iter: 1000
+
+
+Criterion:
+  num_classes: 2
+  overlap_thresh: 0.35
+  prior_for_matching: True
+  bkg_label: 0
+  neg_mining: True
+  neg_pos: 7 
+  neg_overlap: 0.35
+  encode_target: False
+  loc_weight: 1.0
+
+Optimizer:
+  lr: 0.001
+  gamma: 0.1
+  momentum: 0.9
+  weight_decay: 0.0005
+  decay1: 190
+  decay2: 220
+
+PriorBox:
+  clip: False
+  min_sizes: [[16, 32], [64, 128], [256, 512]]
+  steps: [8, 16, 32]
+
+Dataloader:
+  name: Dataloader
+  txt_path: DATASET/widerface/train/label.txt
+  Preproc:
+    rgb_means: [104, 117, 123]
+    image_size: 640
+
